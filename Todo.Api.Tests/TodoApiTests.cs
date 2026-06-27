@@ -1,4 +1,7 @@
-namespace TodoApi.Tests;
+using Todo.Api.Todos;
+using TodoApi.Tests;
+
+namespace Todo.Api.Tests;
 
 public class TodoApiTests
 {
@@ -11,12 +14,12 @@ public class TodoApiTests
         await using var db = application.CreateTodoDbContext();
         await application.CreateUserAsync(userId);
 
-        db.Todos.Add(new Todo { Title = "Thing one I have to do", OwnerId = userId });
+        db.Todos.Add(new Todo.Api.Todos.Todo { Title = "Thing one I have to do", OwnerId = userId });
 
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var client = application.CreateClient(userId);
-        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos");
+        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos);
 
         var todo = Assert.Single(todos);
@@ -32,7 +35,7 @@ public class TodoApiTests
         await using var db = application.CreateTodoDbContext();
 
         var client = application.CreateClient(userId);
-        var response = await client.GetAsync("/todos");
+        var response = await client.GetAsync("/todos", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
     }
@@ -46,11 +49,11 @@ public class TodoApiTests
         await application.CreateUserAsync(userId);
 
         var client = application.CreateClient(userId);
-        var response = await client.PostAsJsonAsync("/todos", new TodoItem { Title = "I want to do this thing tomorrow" });
+        var response = await client.PostAsJsonAsync("/todos", new TodoItem { Title = "I want to do this thing tomorrow" }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
 
-        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos");
+        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos);
 
         var todo = Assert.Single(todos);
@@ -67,9 +70,9 @@ public class TodoApiTests
         await using var db = application.CreateTodoDbContext();
         await application.CreateUserAsync(userId);
 
-        db.Todos.Add(new Todo { Title = "I want to do this thing tomorrow", OwnerId = userId });
+        db.Todos.Add(new Todo.Api.Todos.Todo { Title = "I want to do this thing tomorrow", OwnerId = userId });
 
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var client = application.CreateClient(userId);
 
@@ -78,7 +81,7 @@ public class TodoApiTests
         Assert.Equal("I want to do this thing tomorrow", todo.Title);
         Assert.False(todo.IsComplete);
 
-        var response = await client.DeleteAsync($"/todos/{todo.Id}");
+        var response = await client.DeleteAsync($"/todos/{todo.Id}", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -97,17 +100,17 @@ public class TodoApiTests
         await application.CreateUserAsync(userId0);
         await application.CreateUserAsync(userId1);
 
-        db.Todos.Add(new Todo { Title = "I want to do this thing tomorrow", OwnerId = userId0 });
+        db.Todos.Add(new Todo.Api.Todos.Todo { Title = "I want to do this thing tomorrow", OwnerId = userId0 });
 
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var client0 = application.CreateClient(userId0);
         var client1 = application.CreateClient(userId1);
 
-        var todos0 = await client0.GetFromJsonAsync<List<TodoItem>>("/todos");
+        var todos0 = await client0.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos0);
 
-        var todos1 = await client1.GetFromJsonAsync<List<TodoItem>>("/todos");
+        var todos1 = await client1.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos1);
 
         Assert.Empty(todos1);
@@ -116,10 +119,10 @@ public class TodoApiTests
         Assert.Equal("I want to do this thing tomorrow", todo.Title);
         Assert.False(todo.IsComplete);
 
-        var todo0 = await client0.GetFromJsonAsync<TodoItem>($"/todos/{todo.Id}");
+        var todo0 = await client0.GetFromJsonAsync<TodoItem>($"/todos/{todo.Id}", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todo0);
 
-        var response = await client1.GetAsync($"/todos/{todo.Id}");
+        var response = await client1.GetAsync($"/todos/{todo.Id}", TestContext.Current.CancellationToken);
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
@@ -132,11 +135,11 @@ public class TodoApiTests
         await application.CreateUserAsync(userId);
 
         var client = application.CreateClient(userId);
-        var response = await client.PostAsJsonAsync("/todos", new TodoItem { });
+        var response = await client.PostAsJsonAsync("/todos", new TodoItem { }, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
 
-        var problemDetails = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>();
+        var problemDetails = await response.Content.ReadFromJsonAsync<ValidationProblemDetails>(cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(problemDetails);
 
         Assert.Equal("One or more validation errors occurred.", problemDetails.Title);
@@ -155,21 +158,21 @@ public class TodoApiTests
         await application.CreateUserAsync(userId0);
         await application.CreateUserAsync(userId1);
 
-        db.Todos.Add(new Todo { Title = "I want to do this thing tomorrow", OwnerId = userId0 });
+        db.Todos.Add(new Todo.Api.Todos.Todo { Title = "I want to do this thing tomorrow", OwnerId = userId0 });
 
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var client0 = application.CreateClient(userId0);
         var client1 = application.CreateClient(userId1);
 
-        var todos = await client0.GetFromJsonAsync<List<TodoItem>>("/todos");
+        var todos = await client0.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos);
 
         var todo = Assert.Single(todos);
         Assert.Equal("I want to do this thing tomorrow", todo.Title);
         Assert.False(todo.IsComplete);
 
-        var response = await client1.DeleteAsync($"/todos/{todo.Id}");
+        var response = await client1.DeleteAsync($"/todos/{todo.Id}", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
 
@@ -191,21 +194,21 @@ public class TodoApiTests
         await application.CreateUserAsync(userId);
         await application.CreateUserAsync(adminUserId);
 
-        db.Todos.Add(new Todo { Title = "I want to do this thing tomorrow", OwnerId = userId });
+        db.Todos.Add(new Todo.Api.Todos.Todo { Title = "I want to do this thing tomorrow", OwnerId = userId });
 
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var client = application.CreateClient(userId);
         var adminClient = application.CreateClient(adminUserId, isAdmin: true);
 
-        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos");
+        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos);
 
         var todo = Assert.Single(todos);
         Assert.Equal("I want to do this thing tomorrow", todo.Title);
         Assert.False(todo.IsComplete);
 
-        var response = await adminClient.DeleteAsync($"/todos/{todo.Id}");
+        var response = await adminClient.DeleteAsync($"/todos/{todo.Id}", TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
@@ -227,14 +230,14 @@ public class TodoApiTests
         await using var db = application.CreateTodoDbContext();
         await application.CreateUserAsync(userId);
 
-        db.Todos.Add(new Todo { Title = "I want to do this thing tomorrow", OwnerId = ownerId });
+        db.Todos.Add(new Todo.Api.Todos.Todo { Title = "I want to do this thing tomorrow", OwnerId = ownerId });
 
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         // Create API Client
         var client = application.CreateClient(userId);
 
-        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos");
+        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.NotNull(todos);
 
@@ -243,12 +246,12 @@ public class TodoApiTests
         //update the status
         todo.IsComplete = true;
 
-        var response = await client.PutAsJsonAsync($"todos/{todo.Id}", todo);
+        var response = await client.PutAsJsonAsync($"todos/{todo.Id}", todo, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         // Verify the update
-        todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos");
+        todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos);
         var updatedTodo = Assert.Single(todos);
         Assert.NotNull(updatedTodo);
@@ -271,14 +274,14 @@ public class TodoApiTests
         await application.CreateUserAsync(userId);
         await application.CreateUserAsync(adminUserId);
 
-        db.Todos.Add(new Todo { Title = "I want to do this thing tomorrow", OwnerId = userId });
+        db.Todos.Add(new Todo.Api.Todos.Todo { Title = "I want to do this thing tomorrow", OwnerId = userId });
 
-        await db.SaveChangesAsync();
+        await db.SaveChangesAsync(TestContext.Current.CancellationToken);
 
         var client = application.CreateClient(userId);
         var adminClient = application.CreateClient(adminUserId, isAdmin: true);
 
-        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos");
+        var todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos);
 
         var todo = Assert.Single(todos);
@@ -286,12 +289,12 @@ public class TodoApiTests
         //Update the todo
         todo.IsComplete = true;
 
-        var response = await adminClient.PutAsJsonAsync($"/todos/{todo.Id}", todo);
+        var response = await adminClient.PutAsJsonAsync($"/todos/{todo.Id}", todo, cancellationToken: TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         // Verify the changes
-        todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos");
+        todos = await client.GetFromJsonAsync<List<TodoItem>>("/todos", cancellationToken: TestContext.Current.CancellationToken);
         Assert.NotNull(todos);
         var updatedTodo = Assert.Single(todos);
         Assert.NotNull(updatedTodo);

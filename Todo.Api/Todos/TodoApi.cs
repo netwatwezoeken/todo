@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Todo.Api.Todos;
 
 namespace TodoApi;
 
@@ -30,14 +31,14 @@ internal static class TodoApi
         {
             return await db.Todos.FindAsync(id) switch
             {
-                Todo todo when todo.OwnerId == owner.Id || owner.IsAdmin => TypedResults.Ok(todo.AsTodoItem()),
+                Todo.Api.Todos.Todo todo when todo.OwnerId == owner.Id || owner.IsAdmin => TypedResults.Ok(todo.AsTodoItem()),
                 _ => TypedResults.NotFound()
             };
         });
 
         group.MapPost("/", async Task<Created<TodoItem>> (TodoDbContext db, TodoItem newTodo, CurrentUser owner) =>
         {
-            var todo = new Todo
+            var todo = new Todo.Api.Todos.Todo
             {
                 Title = newTodo.Title,
                 OwnerId = owner.Id

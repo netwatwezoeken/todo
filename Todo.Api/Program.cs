@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Identity;
 using Scalar.AspNetCore;
+using Todo.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +22,13 @@ builder.Services.AddIdentityCore<TodoUser>()
 
 // Configure the database
 var connectionString = builder.Configuration.GetConnectionString("Todos") ?? "Data Source=.db/Todos.db";
-builder.Services.AddSqlite<TodoDbContext>(connectionString);
+builder.Services.AddSqlServer<TodoDbContext>(connectionString);
 
 // State that represents the current user from the database *and* the request
 builder.Services.AddCurrentUser();
 
 // Configure Open API
-builder.Services.AddOpenApi(options => options.AddBearerTokenAuthentication());
+builder.Services.AddOpenApi();
 
 // Configure rate limiting
 builder.Services.AddRateLimiting();
@@ -54,6 +55,7 @@ if (app.Environment.IsDevelopment())
         options.Authentication = new() { PreferredSecuritySchemes = [IdentityConstants.BearerScheme] };
     });
 }
+app.Migrate();
 
 app.MapOpenApi();
 

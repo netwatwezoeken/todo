@@ -1,0 +1,25 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />/Users/jhendriks/src/nwwz/TodoApp-fork/TodoApp.sln.DotSettings.user
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/specs/">
+    <Project Path="Specifications/Specifications.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="Todo.Api/Todo.Api.csproj" />
+    <Project Path="Todo.Web/Server/Todo.Web.Server.csproj" />
+    <Project Path="Todo.Web/Client/Todo.Web.Client.csproj" />
+    <Project Path="Todo.Web/Shared/Todo.Web.Shared.csproj" />
+    <Project Path="TodoApp.AppHost/TodoApp.AppHost.csproj" />
+    <Project Path="TodoApp.ServiceDefaults/TodoApp.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="AspireIntegrationTest/AspireIntegrationTest.csproj" />
+    <Project Path="Todo.Api.Tests/Todo.Api.Tests.csproj" />
+  </Folder>
+</Solution>

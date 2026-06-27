@@ -1,0 +1,8 @@
+[tools]
+"dotnet:Aspire.Cli" = "latest"
+node = "26"
+"npm:@playwright/cli" = "latest"
+
+[hooks]
+enter = "mise up"
+

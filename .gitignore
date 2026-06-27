@@ -298,3 +298,7 @@ __pycache__/
 *.db-shm
 *.db-wal
 /.tye
+traces
+report
+*.feature.cs
+.junie

@@ -39,7 +39,7 @@ public static class UsersApi
 
                 if (result.Succeeded)
                 {
-                    result = await userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerKey, displayName: null));
+                    result = await userManager.AddLoginAsync(user, new UserLoginInfo(provider, providerKey, providerDisplayName: null));
                 }
             }
 

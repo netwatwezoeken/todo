@@ -5,11 +5,11 @@ namespace TodoApi;
 
 public class TodoDbContext(DbContextOptions<TodoDbContext> options) : IdentityDbContext<TodoUser>(options)
 {
-    public DbSet<Todo> Todos => Set<Todo>();
+    public DbSet<Todo.Api.Todos.Todo> Todos => Set<Todo.Api.Todos.Todo>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.Entity<Todo>()
+        builder.Entity<Todo.Api.Todos.Todo>()
                .HasOne<TodoUser>()
                .WithMany()
                .HasForeignKey(t => t.OwnerId)
