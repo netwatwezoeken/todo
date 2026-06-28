@@ -17,6 +17,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AspireIntegrationTest\AspireIntegrationTest.csproj" />
+      <ProjectReference Include="..\UnitTests\UnitTests.csproj" />
     </ItemGroup>
 
 </Project>

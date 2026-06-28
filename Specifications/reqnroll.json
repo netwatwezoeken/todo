@@ -8,6 +8,9 @@
   "bindingAssemblies": [
     {
       "assembly": "AspireIntegrationTest"
+    },
+    {
+      "assembly": "UnitTests"
     }
   ]
 }

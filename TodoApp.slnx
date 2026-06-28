@@ -21,5 +21,6 @@
   <Folder Name="/tests/">
     <Project Path="AspireIntegrationTest/AspireIntegrationTest.csproj" />
     <Project Path="Todo.Api.Tests/Todo.Api.Tests.csproj" />
+    <Project Path="UnitTests/UnitTests.csproj" />
   </Folder>
 </Solution>

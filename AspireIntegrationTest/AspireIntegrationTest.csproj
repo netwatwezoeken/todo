@@ -15,6 +15,7 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Microsoft.Playwright" />
         <PackageReference Include="Reqnroll" />
+        <PackageReference Include="Verify.XunitV3" />
         <PackageReference Include="xunit.v3" />
         <PackageReference Include="xunit.runner.visualstudio">
           <PrivateAssets>all</PrivateAssets>
@@ -28,6 +29,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Todo.Api\Todo.Api.csproj" />
+      <ProjectReference Include="..\Todo.Web\Shared\Todo.Web.Shared.csproj" />
       <ProjectReference Include="..\TodoApp.AppHost\TodoApp.AppHost.csproj" />
     </ItemGroup>
 

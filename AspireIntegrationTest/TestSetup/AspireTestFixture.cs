@@ -1,6 +1,7 @@
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
 using Microsoft.Playwright;
+using TodoApi;
 
 namespace AspireIntegrationTest.TestSetup;
 
@@ -14,17 +15,16 @@ public class AspireTestFixture
 
     public async Task DisposeAsync()
     {
-        if (Context != null)
+        if (Context is not null)
         {
             await Context.CloseAsync();
-            await _browser!.CloseAsync();
+            await _browser.CloseAsync();
             await Context.DisposeAsync();
         }
 
-        if (_playwright != null) 
-            _playwright.Dispose();
-        if (App != null) 
-            await App!.DisposeAsync();
+        _playwright.Dispose();
+        if (App is not null) 
+            await App.DisposeAsync();
     }
     
     public async Task InitializeAsync()
@@ -33,8 +33,7 @@ public class AspireTestFixture
             .CreateAsync<Projects.TodoApp_AppHost>(
                 args: ["DcpPublisher:RandomizePorts=false",
                     "ASPNETCORE_URLS=http://localhost:18888",
-                    "ASPIRE_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true",
-                    "UseMockedGoPay=true"],
+                    "ASPIRE_DASHBOARD_UNSECURED_ALLOW_ANONYMOUS=true"],
                 configureBuilder: (appOptions, hostSettings) =>
                 {
                     appOptions.DisableDashboard = false;
@@ -76,7 +75,7 @@ public class AspireTestFixture
             await Context.DisposeAsync();
         }
         
-        Context = await _browser!.NewContextAsync(new BrowserNewContextOptions()
+        Context = await _browser.NewContextAsync(new BrowserNewContextOptions()
         {   
             IgnoreHTTPSErrors = true,
         });
@@ -86,6 +85,6 @@ public class AspireTestFixture
         Page = await Context.NewPageAsync();
     }
     
-    private static IBrowser? _browser;
-    private static IPlaywright? _playwright;
+    private static IBrowser _browser = null!;
+    private static IPlaywright _playwright = null!;
 }

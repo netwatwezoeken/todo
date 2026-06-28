@@ -11,6 +11,16 @@ public class Todo
 
     [Required]
     public string OwnerId { get; set; } = default!;
+
+    public void Complete()
+    {
+        IsComplete = true;
+    }
+    
+    public void Open()
+    {
+        IsComplete = false;
+    }
 }
 
 // The DTO that excludes the OwnerId (we don't want that exposed to clients)
