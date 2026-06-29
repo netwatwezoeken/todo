@@ -8,7 +8,8 @@ var sqlDb = builder.AddSqlServer(
 
 var todoapi = builder.AddProject<Projects.Todo_Api>("todoapi")
     .WaitFor(sqlDb)
-    .WithReference(sqlDb);
+    .WithReference(sqlDb)
+    .WithHttpHealthCheck("/health");
 
 builder.AddProject<Projects.Todo_Web_Server>("todo-web-server")
     .WaitFor(todoapi)
