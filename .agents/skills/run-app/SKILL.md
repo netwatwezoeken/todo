@@ -1,6 +1,6 @@
 ---
 name: run-app
-description: This is the main entrypoint when running the project. Use whenever the progrma, app, project or aspire needs to run or start. examples are , start the app, start the project, run the website
+description: Always use this skill when starting the program, the app, project or when aspire needs to run or start. Examples that , start the app, start the project, run the website.
 ---
 
 This project uses aspire. Use the aspire skills to run analyse and debug the project.
